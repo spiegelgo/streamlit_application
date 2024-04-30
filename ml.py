@@ -2,6 +2,7 @@ import streamlit as st
 import joblib
 import numpy as np
 import pandas as pd
+import zipfile
 
 def run_ml():
     st.subheader('사용하는 어플 예측하기')
@@ -55,6 +56,8 @@ def run_ml():
     if st.button('예측하기') :
         # 2. 예측한다
         # 2-1. 모델이 있어야 한다
+        file = zipfile.ZipFile('./model/model.zip')
+        file.extractall('./model')
         model = joblib.load('./model/model.pkl')
         #print(model)
         # 2-2. 유저가 입력한 데이터를 모델이 예측하기 위해 가공해야 한다

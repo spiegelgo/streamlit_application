@@ -5,7 +5,7 @@
 사용자에게 정보를 입력받아<br/>
 사용자가 사용하는 어플리케이션을 예측하려한다<br/><br/>
 
-[링크](https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=9f027c94-92fd-4eeb-bf1c-7532f9c8375e,문화 빅데이터 플랫폼)<br/>  
+[링크](https://www.bigdata-culture.kr/bigdata/user/data_market/detail.do?id=9f027c94-92fd-4eeb-bf1c-7532f9c8375e, "문화 빅데이터 플랫폼")<br/>  
 에서 데이터를 내려받았으며  202305,202311 버전이 두개가 중복데이터가 없는 다른 데이터였기때문에<br/>
 병합시킨뒤에 필요없는 데이터는 삭제 후 NaN이 있나 검색하였고<br/>
 나오지않아 없는줄 알고 진행하던차에 문자열 데이터들 unique를 검색하던중<br/>

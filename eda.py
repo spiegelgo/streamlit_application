@@ -21,11 +21,25 @@ def run_eda():
         st.dataframe(df.describe())
     # 각각의 어플리케이션 사용인원 
     st.subheader('각각의 어플리케이션 사용인원 상황입니다.')
-    # "Y"를 1로, "N"을 0으로 바꾸기
+    '''# "Y"를 1로, "N"을 0으로 바꾸기
     df_numeric = df.iloc[:, :17+1].apply(lambda col: col.str.count('Y'))
 
     # 합산하여 결과 출력
     sum_result = df_numeric.sum()
+    st.dataframe(sum_result)'''
+    df_numeric = df.iloc[:, :17+1].apply(lambda col: col.str.count('Y'))
+
+    # 합산하여 결과 출력
+    sum_result = df_numeric.sum()
+
+    # 사용률 계산
+    usage_rate = (sum_result / 64024 * 100).round(2)
+
+    # 사용률을 데이터프레임에 추가
+    sum_result = sum_result.to_frame(name='사용인원')
+    sum_result['사용률'] = usage_rate.apply(lambda x: f"{x:.1f}%")
+
+    # 결과 출력
     st.dataframe(sum_result)
     
     # 각 컬럼별로 카테고리컬 데이터를 따로 보여주는 화면 개발

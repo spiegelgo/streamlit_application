@@ -5,6 +5,8 @@ import pandas as pd
 import zipfile
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+import plotly.express as px
+
 
 def run_ml():
     st.subheader('사용하는 어플 예측하기')
@@ -55,16 +57,43 @@ def run_ml():
         # 2-3. 모델의 predict 함수로 예측한다
         y_pred = model.predict_proba(X_new)
         #print(y_pred)
-        df = pd.read_csv('./data/Changed_Mobile._csv')
+        df = pd.read_csv('./data/Changed_Mobile.csv')
         df.drop('Unnamed: 0',axis=1,inplace=True)
         column_names = df.columns[0:17+1]
         result_str = ""
         
+        # 각 컬럼 이름과 예측 확률을 저장할 리스트
+        column_names = df.columns[0:17+1]
+        probabilities = []
+
+        # 각 컬럼의 이름과 예측 확률을 추출하여 리스트에 저장
         for i, pred in enumerate(y_pred):
+            prob = round(pred[0][0] * 100, 2)  # 소수점 2번째 자리까지 반올림
+            col_name = df.columns[i]  # 콜럼 이름 가져오기
+            probabilities.append((col_name, prob))
+
+        # Bar 차트 그리기
+        probabilities.sort(key=lambda x: x[1], reverse=False)  # 확률에 따라 내림차순 정렬
+        fig_bar = px.bar(x=[p[1] for p in probabilities], y=[p[0] for p in probabilities], orientation='h',
+                        labels={'x': '확률 (%)', 'y': '어플'}, title='각 어플 사용 확률')
+        st.plotly_chart(fig_bar)
+
+        # Pie 차트 그리기
+        fig_pie = px.pie(names=[p[0] for p in probabilities], values=[p[1] for p in probabilities],
+                        title='각 어플 사용 확률')
+        st.plotly_chart(fig_pie)        
+        
+        # 확률을 기준으로 내림차순 정렬
+        probabilities.sort(key=lambda x: x[1], reverse=True)
+
+        # 각 어플의 예측 확률 정보 출력
+        for col_name, prob in probabilities:
+            st.info(f"당신이 '{col_name}' 관련 어플을 사용할 확률은 {prob}% 입니다.")
+        '''for i, pred in enumerate(y_pred):
             prob = pred[0][0] * 100  # 앞의 값만 가져와서 *100
             prob = round(prob, 2)  # 소수점 2째 자리까지 반올림
             col_name = df.columns[i]  # 콜럼 이름 가져오기
-            st.info(f"당신이 '{col_name}' 관련 어플을 사용할 확률은 {prob}% 입니다.")
+            st.info(f"당신이 '{col_name}' 관련 어플을 사용할 확률은 {prob}% 입니다.")'''
 
 
 

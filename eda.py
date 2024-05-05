@@ -16,7 +16,7 @@ def run_eda():
     
     
     st.subheader('탐색적 데이터 분석')
-    st.text('데이터프레임과 통계치를 확인가능합니다.')
+    st.markdown('데이터프레임과 통계치를 확인가능합니다.')
 
     
     
@@ -26,14 +26,15 @@ def run_eda():
     df = pd.read_csv('./data/Changed_Mobile.csv')
     df = df.drop(columns=['Unnamed: 0'])
     if choice_radio == radio_menu[0] :
-        st.write(f'전체 데이터의 갯수는 {df.shape}')
-        st.text('Y, N은 해당 어플리케이션의 사용여부를 나타내며 Y는 사용함, N은 사용 하지않음을 의미')
-        st.text('월_소득 부분의 단위는 만원 이며 100만원 미만은 100만원과 통일')
-        st.text('1,000만원 이상은 1,000만원과 통일 시켰음')
+        st.write(f'전체 데이터의 갯수는 {df.shape}이며,')
+        st.markdown('Y, N은 해당 어플리케이션의 사용여부를 나타내고 Y는 사용함, N은 사용 하지않음을 의미')
+        st.markdown('월_소득 부분의 단위는 만원 이며 100만원 미만은 100만원과 통일')
+        st.markdown('1,000만원 이상은 1,000만원과 통일 시켰음')
         st.dataframe(df)
+
     
     elif choice_radio == radio_menu[1]:
-    
+
         st.dataframe(df.describe(include='object'))
         st.dataframe(df.describe())
     # 각각의 어플리케이션 사용인원 
@@ -63,8 +64,10 @@ def run_eda():
 
     # 각 그룹별 데이터 출력
     for group_name, group_data in grouped_data:
-        st.subheader(f'{selected_category}: {group_name}')
+        st.subheader(f'{selected_category}: {group_name} 의 데이터프레임')
         st.write(group_data)
+        num_rows = group_data.shape[0]
+        st.info(f'{selected_category}: {group_name} 그룹의 인원 수 : {num_rows: ,} 명')
         
         binary_columns = ['K-POP_아이돌', '게임', '사진_촬영', '방송_영상', '웹툰', '검색_포털', '금융', '예매', '여행', '음식_주문', '맛집_추천_예약', '쇼핑', '헬스', '전자지갑', '청소_가사노동', '부동산', '병원_약국_의약품_검색', '중고거래']
         for col in binary_columns:
@@ -72,18 +75,16 @@ def run_eda():
 
 
         # 선택한 카테고리의 데이터프레임에서 'K-POP_아이돌'부터 '중고거래'까지의 열을 추출
-        selected_df = df[[col for col in df.columns if 'K-POP_아이돌' <= col <= '중고거래']]
+        selected_df = group_data[binary_columns].apply(lambda x: x.map({'Y': 1, 'N': 0}))
 
-        # 'Y'와 'N' 값을 1과 0으로 변환하여 그래프 그리기
-        selected_df = group_data[binary_columns].applymap({'Y': 1, 'N': 0}.get)
 
         # bar 차트 그리기
         bar_data = selected_df.sum().sort_values(ascending=False)
-        fig_bar = px.bar(x=bar_data.index, y=bar_data.values, title=f'{selected_category}: {group_name} - Bar 차트')
+        fig_bar = px.bar(x=bar_data.index, y=bar_data.values, title=f'{selected_category}: {group_name} 의 어플 사용인원수')
         fig_bar.update_xaxes(tickangle=320)
         st.plotly_chart(fig_bar)
         
         # pie 차트 그리기
-        fig_pie = px.pie(values=bar_data.values, names=bar_data.index, title=f'{selected_category}: {group_name} - Pie 차트', hole = 0.2)
+        fig_pie = px.pie(values=bar_data.values, names=bar_data.index, title=f'{selected_category}: {group_name} 의 어플 사용 비율', hole = 0.2)
         st.plotly_chart(fig_pie)
         

@@ -9,7 +9,7 @@ def main() :
     
     st.title('모바일 어플리케이션 사용여부 예측')
     
-    menu = ['Home','EDA','ML']
+    menu = ['Home','데이터 설명','사용 어플 예측']
     choice = st.sidebar.selectbox('메뉴', menu)
     
     if choice == menu[0]:

@@ -26,7 +26,7 @@ def run_eda():
     df = pd.read_csv('./data/Changed_Mobile.csv')
     df = df.drop(columns=['Unnamed: 0'])
     if choice_radio == radio_menu[0] :
-        st.write(f'전체 데이터의 갯수는 {df.shape}이며,')
+        st.info(f'전체 데이터의 갯수는 {df.shape}')
         st.markdown('Y, N은 해당 어플리케이션의 사용여부를 나타내고 Y는 사용함, N은 사용 하지않음을 의미')
         st.markdown('월_소득 부분의 단위는 만원 이며 100만원 미만은 100만원과 통일')
         st.markdown('1,000만원 이상은 1,000만원과 통일 시켰음')
@@ -34,9 +34,12 @@ def run_eda():
 
     
     elif choice_radio == radio_menu[1]:
-
-        st.dataframe(df.describe(include='object'))
-        st.dataframe(df.describe())
+        df_des = df.copy()
+        df_des['나이'] = df_des['나이'].str.replace('이상','')
+        df_des['나이'] = df_des['나이'].str.replace('대','')
+        df_des['나이'] = df_des['나이'].astype(int)
+        st.dataframe(df_des.describe(include='object'))
+        st.dataframe(df_des.describe())
     # 각각의 어플리케이션 사용인원 
     st.subheader('각각의 어플리케이션 사용인원 상황입니다.')
 
@@ -46,21 +49,17 @@ def run_eda():
     sum_result = sum_result.to_frame(name='사용인원')                     # 각각의 사용인원 데이터프레임으로 변환
     sum_result['사용률'] = usage_rate.apply(lambda x: f"{x:.1f}%")        # 사용률 데이터프레임에 추가
 
-    # 결과 출력
     st.dataframe(sum_result)
     
-    # 각 컬럼별로 카테고리컬 데이터를 따로 보여주는 화면 개발
+    # 각 컬럼별로 카테고리컬 데이터
     
     st.subheader('카테고리를 선택하면 각각의 데이터를 보여드립니다.')
 
     categories = ['성별', '나이', '결혼', '월_소득', '거주지역']
-
-    # 사용자가 선택한 카테고리
     selected_category = st.selectbox('카테고리 선택', categories)
 
     # 카테고리에 따라 데이터 그룹화
     grouped_data = df.groupby(selected_category)
-    # 나이 10대 20대 수정 그룹별 전부 순서대로 데이터프레임 시각화 
 
     # 각 그룹별 데이터 출력
     for group_name, group_data in grouped_data:

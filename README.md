@@ -1,4 +1,5 @@
 # streamlit_application
+[만들어진 웹 사이트](http://ec2-3-39-253-5.ap-northeast-2.compute.amazonaws.com:8504)<br/>
 
 
 모바일 이용자 특성 이라는 데이터를 이용하여<br/>

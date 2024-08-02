@@ -47,6 +47,18 @@ def run_ml():
         # 입력데이터 원-핫인코딩
         ct = joblib.load('./model/ct.pkl')
         st.write(ct)
+        # ColumnTransformer의 변환기 확인
+        for name, transformer, columns in ct.transformers_:
+            if isinstance(transformer, OneHotEncoder):
+                st.write(f"OneHotEncoder fit status: {hasattr(transformer, 'categories_')}")
+        try:
+            for name, transformer, columns in ct.transformers_:
+                if isinstance(transformer, OneHotEncoder):
+                    st.write(f"Categories for transformer '{name}': {transformer.categories_}")
+        except AttributeError as e:
+            st.write(f"Error accessing categories_: {e}")
+
+
         # 디버깅 정보 출력
         print(f"ct type: {type(ct)}")
         print(f"new_data type: {type(new_data)}")

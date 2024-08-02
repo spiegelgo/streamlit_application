@@ -79,8 +79,8 @@ def run_ml():
 
         
         # 각 컬럼 이름과 예측 확률을 저장할 리스트
-        column_names = df.columns[0:17+1]
-        result_str = ""
+        # column_names = df.columns[0:17+1]
+        # result_str = ""
         probabilities = []
 
         # 각 컬럼의 이름과 예측 확률을 추출하여 리스트에 저장

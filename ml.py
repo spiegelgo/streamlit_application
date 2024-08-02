@@ -46,81 +46,83 @@ def run_ml():
         # 입력데이터 원-핫인코딩
         ct = joblib.load('./model/ct.pkl')
         # 디버깅 정보 출력
-        print(f"ct type: {type(ct)}")
-        print(f"new_data type: {type(new_data)}")
-        print(f"new_data: {new_data}")
+        st.write(f"ct type: {type(ct)}")
+        st.write(f"new_data type: {type(new_data)}")
+        st.write(new_data)
         
-        try:
-            encoded_features = ct.transform(new_data)
-        except Exception as e:
-            st.error(f"Error during transformation: {e}")
-            return
+         # 제대로 로드된 경우에만 transform 수행
+        if isinstance(ct, ColumnTransformer):
+            try:
+                encoded_features = ct.transform(new_data)
+            except Exception as e:
+                st.error(f"Error during transformation: {e}")
+                return
 
-        # 모델에 예측할 데이터 전달
-        X_new = encoded_features.toarray()
-        
-        # 2. 예측한다
-        # 2-1. 모델이 있어야 한다
-        file = zipfile.ZipFile('./model/model.zip')
-        file.extractall('./model')
-        model = joblib.load('./model/model.pkl')
-        #print(model)
-        # 2-2. 유저가 입력한 데이터를 모델이 예측하기 위해 가공해야 한다
-
-
-
-
-        
-        # 2-3. 모델의 predict 함수로 예측한다
-        y_pred = model.predict_proba(X_new)
-        #print(y_pred)
-        df = pd.read_csv('./data/Changed_Mobile.csv')
-        df.drop('Unnamed: 0',axis=1,inplace=True)
-
-        
-        # 각 컬럼 이름과 예측 확률을 저장할 리스트
-        column_names = df.columns[0:17+1]
-        result_str = ""
-        probabilities = []
-
-        # 각 컬럼의 이름과 예측 확률을 추출하여 리스트에 저장
-        for i, pred in enumerate(y_pred):
-            prob = round(pred[0][0] * 100, 2)  # 소수점 2번째 자리까지 반올림
-            col_name = df.columns[i]  # 콜럼 이름 가져오기
-            probabilities.append((col_name, prob))
-
-        # Bar 차트 그리기
-        probabilities.sort(key=lambda x: x[1], reverse=False)  # 확률에 따라 내림차순 정렬
-        fig_bar = px.bar(x=[p[1] for p in probabilities], y=[p[0] for p in probabilities], orientation='h',
-                        labels={'x': '확률 (%)', 'y': '어플'}, title='각 어플 사용 확률')
-        st.plotly_chart(fig_bar)
-
-        # 행의 개수와 열의 개수 설정
-        n_rows = 6
-        n_cols = 3
-
-        # Pie 차트를 subplot으로 그리기
-        fig, axs = plt.subplots(nrows=n_rows, ncols=n_cols, figsize=(9, 15))
+            # 모델에 예측할 데이터 전달
+            X_new = encoded_features.toarray()
+            
+            # 2. 예측한다
+            # 2-1. 모델이 있어야 한다
+            file = zipfile.ZipFile('./model/model.zip')
+            file.extractall('./model')
+            model = joblib.load('./model/model.pkl')
+            #print(model)
+            # 2-2. 유저가 입력한 데이터를 모델이 예측하기 위해 가공해야 한다
 
 
-        # 확률을 기준으로 내림차순으로 정렬
-        probabilities.sort(key=lambda x: x[1], reverse=True)
-
-        # Pie 차트 그리기
-        for i, (col_name, prob) in enumerate(probabilities):
-            row = i // n_cols  # 현재 인덱스의 행 번호
-            col = i % n_cols   # 현재 인덱스의 열 번호
-            if row < n_rows and col < n_cols:  # 행과 열이 범위 내에 있는지 확인
-                axs[row, col].pie([prob, 100 - prob], labels=[f'사용확률: {prob}%',  '사용안함'], autopct='%1.2f%%', startangle=90)
-                axs[row, col].set_title(f'{col_name} 어플 사용 확률')
 
 
-        plt.tight_layout()
-        st.pyplot(fig)
+            
+            # 2-3. 모델의 predict 함수로 예측한다
+            y_pred = model.predict_proba(X_new)
+            #print(y_pred)
+            df = pd.read_csv('./data/Changed_Mobile.csv')
+            df.drop('Unnamed: 0',axis=1,inplace=True)
+
+            
+            # 각 컬럼 이름과 예측 확률을 저장할 리스트
+            column_names = df.columns[0:17+1]
+            result_str = ""
+            probabilities = []
+
+            # 각 컬럼의 이름과 예측 확률을 추출하여 리스트에 저장
+            for i, pred in enumerate(y_pred):
+                prob = round(pred[0][0] * 100, 2)  # 소수점 2번째 자리까지 반올림
+                col_name = df.columns[i]  # 콜럼 이름 가져오기
+                probabilities.append((col_name, prob))
+
+            # Bar 차트 그리기
+            probabilities.sort(key=lambda x: x[1], reverse=False)  # 확률에 따라 내림차순 정렬
+            fig_bar = px.bar(x=[p[1] for p in probabilities], y=[p[0] for p in probabilities], orientation='h',
+                            labels={'x': '확률 (%)', 'y': '어플'}, title='각 어플 사용 확률')
+            st.plotly_chart(fig_bar)
+
+            # 행의 개수와 열의 개수 설정
+            n_rows = 6
+            n_cols = 3
+
+            # Pie 차트를 subplot으로 그리기
+            fig, axs = plt.subplots(nrows=n_rows, ncols=n_cols, figsize=(9, 15))
 
 
-        # 각 어플의 예측 확률 정보 출력
-        for col_name, prob in probabilities:
-            st.info(f"당신이 '{col_name}' 관련 어플을 사용할 확률은 {prob}% 입니다.")
+            # 확률을 기준으로 내림차순으로 정렬
+            probabilities.sort(key=lambda x: x[1], reverse=True)
+
+            # Pie 차트 그리기
+            for i, (col_name, prob) in enumerate(probabilities):
+                row = i // n_cols  # 현재 인덱스의 행 번호
+                col = i % n_cols   # 현재 인덱스의 열 번호
+                if row < n_rows and col < n_cols:  # 행과 열이 범위 내에 있는지 확인
+                    axs[row, col].pie([prob, 100 - prob], labels=[f'사용확률: {prob}%',  '사용안함'], autopct='%1.2f%%', startangle=90)
+                    axs[row, col].set_title(f'{col_name} 어플 사용 확률')
+
+
+            plt.tight_layout()
+            st.pyplot(fig)
+
+
+            # 각 어플의 예측 확률 정보 출력
+            for col_name, prob in probabilities:
+                st.info(f"당신이 '{col_name}' 관련 어플을 사용할 확률은 {prob}% 입니다.")
 
 

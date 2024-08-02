@@ -38,17 +38,27 @@ def run_ml():
     GENDER = X_label_encoder.transform([GENDER])[0]
     # 사용자 입력 데이터를 DataFrame으로 변환
     new_data = pd.DataFrame({'성별': [GENDER], '나이': [AGE], '결혼': [MARRIAGE], '월_소득': [INCOME], '거주지역': [AREA] })
-
-    # 입력데이터 원-핫인코딩
-    ct = joblib.load('./model/ct.pkl')
-    encoded_features = ct.transform(new_data)
-
-    # 모델에 예측할 데이터 전달
-    X_new = encoded_features.toarray()
  
     st.subheader('버튼을 누르면 예측합니다.')
     
     if st.button('예측하기') :
+        
+        # 입력데이터 원-핫인코딩
+        ct = joblib.load('./model/ct.pkl')
+        # 디버깅 정보 출력
+        print(f"ct type: {type(ct)}")
+        print(f"new_data type: {type(new_data)}")
+        print(f"new_data: {new_data}")
+        
+        try:
+            encoded_features = ct.transform(new_data)
+        except Exception as e:
+            st.error(f"Error during transformation: {e}")
+            return
+
+        # 모델에 예측할 데이터 전달
+        X_new = encoded_features.toarray()
+        
         # 2. 예측한다
         # 2-1. 모델이 있어야 한다
         file = zipfile.ZipFile('./model/model.zip')

@@ -45,6 +45,11 @@ def run_ml():
         
         # 입력데이터 원-핫인코딩
         ct = joblib.load('./model/ct.pkl')
+        # ColumnTransformer 내부 변환기 확인
+        for name, transformer, columns in ct.transformers:
+            st.write(f"Transformer name: {name}")
+            st.write(f"Transformer type: {type(transformer)}")
+            st.write(f"Columns: {columns}")
         # 디버깅 정보 출력
         st.write(f"ct type: {type(ct)}")
         st.write(f"new_data type: {type(new_data)}")

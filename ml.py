@@ -44,10 +44,7 @@ def run_ml():
     
     if st.button('예측하기') :
         
-        # 입력데이터 원-핫인코딩
-        new_data['성별'] = new_data['성별'].astype(str)
-        st.write(new_data.dtypes)
-        
+        # 입력데이터 원-핫인코딩        
         ct = joblib.load('./model/ct.pkl')
         
         try:

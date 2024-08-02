@@ -61,6 +61,9 @@ def run_ml():
             if isinstance(transformer, OneHotEncoder):
                 st.write(f"Transforming with {name}")
                 try:
+                    if not transformer.categories_:
+                        st.write(f"Fitting OneHotEncoder with data: {new_data[columns]}")
+                        transformer.fit(new_data[columns])
                     transformed = transformer.transform(new_data[columns])
                     st.write(f"Transformed data: {transformed}")
                 except Exception as e:

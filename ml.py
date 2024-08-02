@@ -50,12 +50,23 @@ def run_ml():
             st.write(f"Transformer name: {name}")
             st.write(f"Transformer type: {type(transformer)}")
             st.write(f"Columns: {columns}")
-        # 디버깅 정보 출력
+
+        # 객체 타입 확인
         st.write(f"ct type: {type(ct)}")
         st.write(f"new_data type: {type(new_data)}")
         st.write(new_data)
         
-         # 제대로 로드된 경우에만 transform 수행
+        # 직접 변환 시도
+        for name, transformer, columns in ct.transformers:
+            if isinstance(transformer, OneHotEncoder):
+                st.write(f"Transforming with {name}")
+                try:
+                    transformed = transformer.transform(new_data[columns])
+                    st.write(f"Transformed data: {transformed}")
+                except Exception as e:
+                    st.error(f"Error during {name} transformation: {e}")
+        
+        # 제대로 로드된 경우에만 transform 수행
         if isinstance(ct, ColumnTransformer):
             try:
                 encoded_features = ct.transform(new_data)

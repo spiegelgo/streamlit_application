@@ -45,10 +45,29 @@ def run_ml():
     
     if st.button('예측하기') :
 
+        # 데이터 타입 변환
+        new_data['성별'] = new_data['성별'].astype(int)
+        new_data['결혼'] = new_data['결혼'].astype(str)
+        new_data['월_소득'] = new_data['월_소득'].astype(int)
+        new_data['나이'] = new_data['나이'].astype(int)
+        new_data['거주지역'] = new_data['거주지역'].astype(str)
+
+        # 디버깅: 데이터 타입과 내용 확인
+        st.write("new_data 데이터 타입:")
+        st.write(new_data.dtypes)
+        st.write("new_data 내용:")
+        st.write(new_data)
+
         # 입력데이터 원-핫인코딩
         st.dataframe(new_data)
         ct = joblib.load('./model/ct.pkl')
+        st.write(type(ct))
         st.write(ct)
+
+        if not isinstance(ct, ColumnTransformer):
+            st.error("ct가 ColumnTransformer 객체가 아닙니다.")
+            return
+            
         try:
             encoded_features = ct.transform(new_data)
             st.write(encoded_features)

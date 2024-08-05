@@ -73,7 +73,7 @@ def run_ml():
                         st.write("Encoded features:")
                         st.write(encoded_features)
 
-                        # Convert to dense array if needed
+                                # 모델에 예측할 데이터 전달
                         X_new = encoded_features.toarray()
                         st.write("Transformed array:")
                         st.write(X_new)
@@ -87,8 +87,6 @@ def run_ml():
         except Exception as e:
             st.error(f"Error loading ColumnTransformer: {e}")
 
-        # 모델에 예측할 데이터 전달
-        X_new = encoded_features.toarray()
 
         # 2. 예측한다
         # 2-1. 모델이 있어야 한다

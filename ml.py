@@ -55,8 +55,7 @@ def run_ml():
         st.write(new_data.dtypes)
 
         # 입력데이터 원-핫인코딩
-        with open('./model/new_ct.pkl', 'rb') as f:
-            ct = pickle.load(f) 
+        ct = joblib.load('./model/ct.pkl')
         st.write(ct)
         st.write({type(ct)})
         encoded_features = ct.transform(new_data)

@@ -48,16 +48,19 @@ def run_ml():
 
         # 데이터 타입 변환
         new_data['성별'] = new_data['성별'].astype(int)
+        new_data['나이'] = new_data['나이'].astype(int)
         new_data['결혼'] = new_data['결혼'].astype(str)
         new_data['월_소득'] = new_data['월_소득'].astype(int)
-        new_data['나이'] = new_data['나이'].astype(int)
         new_data['거주지역'] = new_data['거주지역'].astype(str)
-
+        st.write(new_data.dtypes)
 
         # 입력데이터 원-핫인코딩
         with open('./model/new_ct.pkl', 'rb') as f:
             ct = pickle.load(f) 
+        st.write(ct)
+        st.write({type(ct)})
         encoded_features = ct.transform(new_data)
+        st.write(encoded_features)
 
         # 모델에 예측할 데이터 전달
         X_new = encoded_features.toarray()

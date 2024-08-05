@@ -50,7 +50,9 @@ def run_ml():
 
         # 입력데이터 원-핫인코딩
         try:
-            ct = joblib.load('./model/ct.pkl')
+            with open('./model/new_ct.pkl', 'rb') as f:
+                ct = pickle.load(f)
+            #ct = joblib.load('./model/ct.pkl')
             st.write(f"Loaded object type: {type(ct)}")
 
             # ColumnTransformer의 타입 검사

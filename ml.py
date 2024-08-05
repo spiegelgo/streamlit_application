@@ -54,24 +54,12 @@ def run_ml():
 
 
         # 입력데이터 원-핫인코딩
-        # 새로 생성한 ColumnTransformer
-        ct = ColumnTransformer(transformers=[ ('onehot', OneHotEncoder(), ['결혼', '거주지역'] ) ], remainder='passthrough')
-
-        # 새로 저장
-        joblib.dump(ct, 'new_ct.pkl')
-
-        # 새로 로드
-        ct_new = joblib.load('new_ct.pkl')
-        st.write({type(ct_new)})
-        st.write(f"Transformers: {ct_new.transformers}")
-
         ct = joblib.load('./model/ct.pkl')
-        st.write({type(ct)})
-        st.write(f"Transformers: {ct.transformers}")
         encoded_features = ct.transform(new_data)
+        
         # 모델에 예측할 데이터 전달
         X_new = encoded_features.toarray()
-        st.write(X_new)
+
         # 2. 예측한다
         # 2-1. 모델이 있어야 한다
         file = zipfile.ZipFile('./model/model.zip')

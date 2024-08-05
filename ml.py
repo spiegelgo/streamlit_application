@@ -45,6 +45,14 @@ def run_ml():
     
     if st.button('예측하기') :
 
+        # 데이터 타입 변환
+        new_data['성별'] = new_data['성별'].astype(int)
+        new_data['결혼'] = new_data['결혼'].astype(str)
+        new_data['월_소득'] = new_data['월_소득'].astype(int)
+        new_data['나이'] = new_data['나이'].astype(int)
+        new_data['거주지역'] = new_data['거주지역'].astype(str)
+
+
         # 입력데이터 원-핫인코딩
         st.dataframe(new_data)
         ct = joblib.load('./model/ct.pkl')

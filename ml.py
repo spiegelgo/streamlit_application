@@ -45,46 +45,10 @@ def run_ml():
     
     if st.button('예측하기') :
 
-        # 데이터 타입 변환
-        new_data['성별'] = new_data['성별'].astype(int)
-        new_data['결혼'] = new_data['결혼'].astype(str)
-        new_data['월_소득'] = new_data['월_소득'].astype(int)
-        new_data['나이'] = new_data['나이'].astype(int)
-        new_data['거주지역'] = new_data['거주지역'].astype(str)
-
-        # 디버깅: 데이터 타입과 내용 확인
-        st.write("new_data 데이터 타입:")
-        st.write(new_data.dtypes)
-
         # 입력데이터 원-핫인코딩
         st.dataframe(new_data)
         ct = joblib.load('./model/ct.pkl')
-        for name, transformer, columns in ct.transformers_:
-            st.write(f"Transformer name: {name}")
-            st.write(f"Transformer: {transformer}")
-            st.write(f"Columns: {columns}")
-        st.write(type(ct))
-        st.write(ct)
-        for name, transformer, columns in ct.transformers_:
-            if isinstance(transformer, OneHotEncoder):
-                st.write(f"OneHotEncoder details: {transformer}")
-
-        if not isinstance(ct, ColumnTransformer):
-            st.error("ct가 ColumnTransformer 객체가 아닙니다.")
-            return
-
-        # # OneHotEncoder 개별 확인
-        # for name, transformer, columns in ct.transformers:
-        #     if name == 'onehot':
-        #         st.write(f"OneHotEncoder 대상 컬럼: {columns}")
-        #         ohe = transformer
-        #         try:
-        #             encoded_sample = ohe.transform(new_data[columns])
-        #             st.write("OneHotEncoder 테스트 인코딩 결과:")
-        #             st.write(encoded_sample)
-        #         except Exception as e:
-        #             st.error(f"OneHotEncoder 에러: {e}")
-        #             return
+        st.write(ct.named_transformers_['onehot'].categories_)
 
         try:
             encoded_features = ct.transform(new_data)

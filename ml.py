@@ -45,11 +45,6 @@ def run_ml():
     st.subheader('버튼을 누르면 예측합니다.')
     
     if st.button('예측하기') :
-
-        st.write(new_data.dtypes)
-
-        # 입력데이터 원-핫인코딩
-
         #with open('./model/new_ct.pkl', 'rb') as f:
         #    ct = pickle.load(f)
         ct = joblib.load('./model/ct.pkl')

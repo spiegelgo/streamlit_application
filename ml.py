@@ -66,18 +66,18 @@ def run_ml():
             st.error("ct가 ColumnTransformer 객체가 아닙니다.")
             return
 
-        # OneHotEncoder 개별 확인
-        for name, transformer, columns in ct.transformers:
-            if name == 'onehot':
-                st.write(f"OneHotEncoder 대상 컬럼: {columns}")
-                ohe = transformer
-                try:
-                    encoded_sample = ohe.transform(new_data[columns])
-                    st.write("OneHotEncoder 테스트 인코딩 결과:")
-                    st.write(encoded_sample)
-                except Exception as e:
-                    st.error(f"OneHotEncoder 에러: {e}")
-                    return
+        # # OneHotEncoder 개별 확인
+        # for name, transformer, columns in ct.transformers:
+        #     if name == 'onehot':
+        #         st.write(f"OneHotEncoder 대상 컬럼: {columns}")
+        #         ohe = transformer
+        #         try:
+        #             encoded_sample = ohe.transform(new_data[columns])
+        #             st.write("OneHotEncoder 테스트 인코딩 결과:")
+        #             st.write(encoded_sample)
+        #         except Exception as e:
+        #             st.error(f"OneHotEncoder 에러: {e}")
+        #             return
 
         try:
             encoded_features = ct.transform(new_data)

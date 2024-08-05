@@ -49,11 +49,41 @@ def run_ml():
         st.write(new_data.dtypes)
 
         # 입력데이터 원-핫인코딩
-        ct = joblib.load('./model/ct.pkl')
-        st.write(ct)
-        st.write({type(ct)})
-        encoded_features = ct.transform(new_data)
-    
+        try:
+            ct = joblib.load('./model/ct.pkl')
+            st.write(f"Loaded object type: {type(ct)}")
+
+            # ColumnTransformer의 타입 검사
+            if isinstance(ct, ColumnTransformer):
+                st.write("Transformers:{ct.transformers}")
+
+                # ColumnTransformer의 transformers 속성을 예상된 값과 비교
+                expected_transformers = [('onehot', OneHotEncoder(), ['결혼', '거주지역'])]
+                actual_transformers = [(name, type(trans).__name__, cols) for name, trans, cols in ct.transformers]
+
+                expected_transformers_simplified = [(name, trans.__class__.__name__, cols) for name, trans, cols in expected_transformers]
+
+                if actual_transformers == expected_transformers_simplified:
+                    st.write("ColumnTransformer is correctly configured.")
+                    try:
+                        # 입력 데이터 원-핫 인코딩
+                        encoded_features = ct.transform(new_data)
+                        st.write("Encoded features:")
+                        st.write(encoded_features)
+
+                        # Convert to dense array if needed
+                        X_new = encoded_features.toarray()
+                        st.write("Transformed array:")
+                        st.write(X_new)
+
+                    except Exception as e:
+                        st.error(f"Error during transformation: {e}")
+                else:
+                    st.error("Loaded ColumnTransformer does not match the expected configuration.")
+            else:
+                st.error("Loaded object is not of type ColumnTransformer.")
+        except Exception as e:
+            st.error(f"Error loading ColumnTransformer: {e}")
 
         # 모델에 예측할 데이터 전달
         X_new = encoded_features.toarray()

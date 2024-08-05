@@ -49,8 +49,12 @@ def run_ml():
         st.dataframe(new_data)
         ct = joblib.load('./model/ct.pkl')
         st.write(ct)
-        encoded_features = ct.transform(new_data)
-        st.write(encoded_features)
+        try:
+            encoded_features = ct.transform(new_data)
+            st.write(encoded_features)
+        except Exception as e:
+            st.error(f"ct.transform 에러: {e}")
+            return
         # 모델에 예측할 데이터 전달
         X_new = encoded_features.toarray()
         st.write(X_new)

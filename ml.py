@@ -1,5 +1,6 @@
 import streamlit as st
 import joblib
+import pickle
 import numpy as np
 import pandas as pd
 import zipfile
@@ -54,9 +55,10 @@ def run_ml():
 
 
         # 입력데이터 원-핫인코딩
-        ct = joblib.load('./model/ct.pkl')
+        with open('./model/new_ct.pkl', 'rb') as f:
+            ct = pickle.load(f) 
         encoded_features = ct.transform(new_data)
-        
+
         # 모델에 예측할 데이터 전달
         X_new = encoded_features.toarray()
 

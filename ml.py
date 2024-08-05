@@ -55,7 +55,8 @@ def run_ml():
 
         # 입력데이터 원-핫인코딩
         ct = joblib.load('./model/ct.pkl')
-
+        st.write({type(ct)})
+        st.write(f"Transformers: {ct.transformers_}")
         encoded_features = ct.transform(new_data)
         # 모델에 예측할 데이터 전달
         X_new = encoded_features.toarray()

@@ -59,8 +59,15 @@ def run_ml():
         # 입력데이터 원-핫인코딩
         st.dataframe(new_data)
         ct = joblib.load('./model/ct.pkl')
+        for name, transformer, columns in ct.transformers_:
+            st.write(f"Transformer name: {name}")
+            st.write(f"Transformer: {transformer}")
+            st.write(f"Columns: {columns}")
         st.write(type(ct))
         st.write(ct)
+        for name, transformer, columns in ct.transformers_:
+            if isinstance(transformer, OneHotEncoder):
+                st.write(f"OneHotEncoder details: {transformer}")
 
         if not isinstance(ct, ColumnTransformer):
             st.error("ct가 ColumnTransformer 객체가 아닙니다.")

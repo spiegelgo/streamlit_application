@@ -1,5 +1,6 @@
 import streamlit as st
 import joblib
+import pickle
 import numpy as np
 import pandas as pd
 import zipfile
@@ -36,26 +37,25 @@ def run_ml():
     # 입력데이터 레이블 인코딩    
     X_label_encoder = joblib.load('./model/X_label_encoder.pkl')
     GENDER = X_label_encoder.transform([GENDER])[0]
-    
     # 사용자 입력 데이터를 DataFrame으로 변환
     new_data = pd.DataFrame({'성별': [GENDER], '나이': [AGE], '결혼': [MARRIAGE], '월_소득': [INCOME], '거주지역': [AREA] })
     
+
+ 
     st.subheader('버튼을 누르면 예측합니다.')
     
     if st.button('예측하기') :
-        
-        # 입력데이터 원-핫인코딩        
+        #with open('./model/new_ct.pkl', 'rb') as f:
+        #    ct = pickle.load(f)
         ct = joblib.load('./model/ct.pkl')
-        
-        try:
-            encoded_features = ct.transform(new_data)
-        except Exception as e:
-            st.error(f"Error during transformation: {e}")
-            return
+        # 입력 데이터 원-핫 인코딩
+        encoded_features = ct.transform(new_data)
 
         # 모델에 예측할 데이터 전달
         X_new = encoded_features.toarray()
-        
+
+
+
         # 2. 예측한다
         # 2-1. 모델이 있어야 한다
         file = zipfile.ZipFile('./model/model.zip')
@@ -63,10 +63,6 @@ def run_ml():
         model = joblib.load('./model/model.pkl')
         #print(model)
         # 2-2. 유저가 입력한 데이터를 모델이 예측하기 위해 가공해야 한다
-
-
-
-
         
         # 2-3. 모델의 predict 함수로 예측한다
         y_pred = model.predict_proba(X_new)

@@ -14,11 +14,13 @@ def run_eda():
     if platform.system() == 'Linux':
         rc('font', family='NanumGothic')
     
+    # 캐시 비우기 버튼
+    if st.button('캐시 비우기'):
+        st.legacy_caching.clear_cache()
+        st.success('캐시가 성공적으로 비워졌습니다.')    
     
     st.subheader('탐색적 데이터 분석')
     st.markdown('데이터프레임과 통계치를 확인가능합니다.')
-
-    
     
     radio_menu = ['데이터프레임','통계치']
     

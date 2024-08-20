@@ -16,7 +16,7 @@ def run_eda():
     
     # 캐시 비우기 버튼
     if st.button('캐시 비우기'):
-        st.legacy_caching.clear_cache()
+        st.cache_resource.clear()
         st.success('캐시가 성공적으로 비워졌습니다.')    
     
     st.subheader('탐색적 데이터 분석')
